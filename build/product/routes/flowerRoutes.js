@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const flowerController_1 = require("../controllers/flowerController");
+const auth_1 = require("../../shared/middlewares/auth");
+const flowerRoutes = (0, express_1.Router)();
+flowerRoutes.get('/flower', auth_1.authMiddleware, flowerController_1.getFlowers);
+flowerRoutes.get('/flower/:id', auth_1.authMiddleware, flowerController_1.getFlowerById);
+flowerRoutes.post('/flower', auth_1.authMiddleware, flowerController_1.createFlower);
+flowerRoutes.put('/flower/:id', auth_1.authMiddleware, flowerController_1.updateFlower);
+flowerRoutes.delete('/flower/:id', auth_1.authMiddleware, flowerController_1.deleteFlower);
+exports.default = flowerRoutes;

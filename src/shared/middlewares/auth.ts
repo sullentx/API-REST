@@ -1,11 +1,13 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { CustomerRepository } from '../../employee/repositories/customerRepository';
-import { CustomerPayload } from '../config/types/customerPayLoad';
+import { PersonRepository } from '../../repositories/personRepository';
+import { PersonPayload } from '../config/types/personPayLoad';
 import { AuthRequest } from '../config/types/authRequest';
 
 dotenv.config();
+
+
 
 const secretKey = process.env.SECRET || "";
 
@@ -17,14 +19,14 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
   }
 
   try {
-    const payload = jwt.verify(token, secretKey) as CustomerPayload;
-    const cliente = await CustomerRepository.findById(payload.customer_id);
+    const payload = jwt.verify(token, secretKey) as PersonPayload;
+    const person = await PersonRepository.findById(payload.id);
 
-    if (!cliente) {
+    if (!person) {
       return res.status(401).json({ message: 'Invalid token' });
     }
 
-    req.customerData = payload;
+    req.personData = { ...payload, role_id: person.role_id };
     next();
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
@@ -33,4 +35,3 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     return res.status(401).json({ message: 'Unauthorized' });
   }
 };
-

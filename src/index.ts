@@ -3,9 +3,11 @@ import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 
 // Importar rutas de módulos
-import customerRoutes from './employee/routes/customerRoutes';
-import flowerRoutes from './product/routes/flowerRoutes';
-
+import customerRoutes from './routes/customerRoutes';
+import flowerRoutes from './routes/flowerRoutes';
+import favoriteRoutes from './routes/favoriteRoutes'
+import imageRouter from './routes/imageRoutes'
+import routerBouquet from './routes/BouquetRoutes';
 // Importar middlewares compartidos
 import { errorHandler } from './shared/middlewares/errorHandler';
 import { notFoundHandler } from './shared/middlewares/notFoundHandler';
@@ -22,8 +24,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rutas de los módulos
+app.use('/api/upload',imageRouter);
 app.use('/api/customer', customerRoutes);
 app.use('/api/flowers', flowerRoutes);
+app.use(express.json());
+app.use('/api', favoriteRoutes);
+app.use('/api',routerBouquet );
 
 // Middleware para manejar rutas no encontradas
 app.use(notFoundHandler);
