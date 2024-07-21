@@ -14,7 +14,7 @@ export class ordersRepository {
             const orders: Orders[] = results as Orders[];
             resolve(orders);
           }
-        });
+        }); 
       });
     }
 

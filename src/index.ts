@@ -1,7 +1,8 @@
 import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
-
+import cors from 'cors'
+import morgan from 'morgan';
 // Importar rutas de módulos
 import customerRoutes from './routes/customerRoutes';
 import flowerRoutes from './routes/flowerRoutes';
@@ -22,6 +23,8 @@ const port: number = parseInt(process.env.PORT as string, 10);
 // Middleware de análisis del cuerpo
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('dev'))
+app.use(cors());
 
 // Rutas de los módulos
 app.use('/api/upload',imageRouter);

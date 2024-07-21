@@ -12,6 +12,8 @@ export class BouquetService {
     
     const bouquetId = await BouquetRepository.create(bouquet);
     bouquet.id = bouquetId;
+
+    
     return bouquet;
   }
 
