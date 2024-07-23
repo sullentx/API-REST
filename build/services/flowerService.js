@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FlowerService = void 0;
-const flowerRepository_1 = require("../reporsitories/flowerRepository");
+const flowerRepository_1 = require("../repositories/flowerRepository");
 class FlowerService {
     static getFlowers() {
         return __awaiter(this, void 0, void 0, function* () {

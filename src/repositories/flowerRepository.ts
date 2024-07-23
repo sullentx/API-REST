@@ -17,10 +17,11 @@ export class FlowerRepository {
     });
   }
 
-  public static async findById(id: number): Promise<Flower | null> {
+  public static async findById(name: string): Promise<Flower | null> {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM flower WHERE id = ?', [id], (error: any, results) => {
+      connection.query('SELECT * FROM flower WHERE name LIKE ?', [`%${name}%`], (error: any, results) => {
         if (error) {
+          console.log(error)
           reject(error);
         } else {
           const flowers: Flower[] = results as Flower[];
@@ -35,9 +36,9 @@ export class FlowerRepository {
   }
 
   public static async createFlower(flower: Flower): Promise<Flower> {
-    const query = 'INSERT INTO flower (name, price, color) VALUES (?,?,?)';
+    const query = 'INSERT INTO flower (name, price, color,quantity) VALUES (?,?,?,?)';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [flower.name, flower.price, flower.color], (error, result: ResultSetHeader) => {
+      connection.execute(query, [flower.name, flower.price, flower.color,flower.quantity], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {
@@ -49,15 +50,16 @@ export class FlowerRepository {
     });
   }
 
-  public static async updateFlower(flower_id: number, flowerData: Flower): Promise<Flower | null> {
-    const query = 'UPDATE flower SET name = ?, price = ?, color = ? WHERE flower_id = ?';
+  public static async updateFlower(name: string, flowerData: Flower): Promise<Flower | null> {
+    const query = 'UPDATE flower SET name = ?, price = ?, color = ? , quantity = ? WHERE name = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [flowerData.name, flowerData.price, flowerData.color ,flower_id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [flowerData.name, flowerData.price, flowerData.color , flowerData.quantity, name], (error, result: ResultSetHeader) => {
         if (error) {
+          console.log(error)
           reject(error);
         } else {
           if (result.affectedRows > 0) {
-            const updatedFlower: Flower = { ...flowerData, flower_id: flower_id };
+            const updatedFlower: Flower = { ...flowerData, name: name };
             resolve(updatedFlower);
           } else {
             resolve(null);
@@ -67,10 +69,10 @@ export class FlowerRepository {
     });
   }
 
-  public static async deleteFlower(id: number): Promise<boolean> {
-    const query = 'DELETE FROM flower WHERE flower_id = ?';
+  public static async deleteFlower(name: string): Promise<boolean> {
+    const query = 'DELETE FROM flower WHERE name = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [name], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {

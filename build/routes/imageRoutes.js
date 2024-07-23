@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const imageController_1 = require("../controllers/imageController");
+const auth_1 = require("../shared/middlewares/auth");
+const roleMiddleware_1 = require("../shared/middlewares/roleMiddleware");
+const imageRouter = (0, express_1.Router)();
+imageRouter.post('/upload', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, imageController_1.uploadBouquetImage, imageController_1.createBouquetImage);
+imageRouter.get('/:id', imageController_1.getImagesByBouquetId);
+exports.default = imageRouter;

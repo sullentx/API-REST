@@ -3,4 +3,5 @@ export interface Flower {
     name: string;
     color:string;
     price: number;
+    quantity: number;
   }  

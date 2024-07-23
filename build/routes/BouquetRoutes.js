@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const BouquetController_1 = require("../controllers/BouquetController");
+const roleMiddleware_1 = require("../shared/middlewares/roleMiddleware");
+const auth_1 = require("../shared/middlewares/auth");
+const routerBouquet = (0, express_1.Router)();
+routerBouquet.post('/bouquets', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, BouquetController_1.createBouquet);
+routerBouquet.get('/bouquets/:id', BouquetController_1.getBouquetById);
+routerBouquet.get('/bouquets', BouquetController_1.getAllBouquets);
+routerBouquet.put('/bouquets/:id', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, BouquetController_1.updateBouquet);
+routerBouquet.delete('/bouquets/:id', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, BouquetController_1.deleteBouquet);
+exports.default = routerBouquet;

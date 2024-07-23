@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const personController_1 = require("../controllers/personController");
+const auth_1 = require("../shared/middlewares/auth");
+const roleMiddleware_1 = require("../shared/middlewares/roleMiddleware");
+const personRoutes = (0, express_1.Router)();
+personRoutes.post('/login', personController_1.loginPerson);
+personRoutes.post('/', personController_1.createPerson);
+personRoutes.put('/:person_id', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, personController_1.updatePerson);
+personRoutes.delete('/:person_id', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, personController_1.deletePerson);
+personRoutes.get('/persons', auth_1.authMiddleware, roleMiddleware_1.adminMiddleware, personController_1.getPersons);
+personRoutes.get('/:person_id', auth_1.authMiddleware, personController_1.getPersonById);
+exports.default = personRoutes;

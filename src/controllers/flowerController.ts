@@ -13,10 +13,11 @@ export const getFlowers = async (_req: Request, res: Response): Promise<void> =>
 
 export const getFlowerById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const flower = await FlowerService.getFlowerbyId(parseInt(req.params.id, 10)); 
+    const flower = await FlowerService.getFlowerbyId((req.params.name)); 
     if (flower) {
       res.status(200).json(flower);
     } else {
+      console.log(flower)
       res.status(404).json({ message: 'Flower not found' });
     }
   } catch (error: any) {
@@ -37,7 +38,7 @@ export const createFlower = async (req: Request, res: Response): Promise<void> =
 export const updateFlower = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedFlower: Flower = req.body;
-    await FlowerService.updateFlower(parseInt(req.params.id, 10), updatedFlower); 
+    await FlowerService.updateFlower((req.params.name), updatedFlower); 
     res.send('Flower actualizado');
   } catch (err) {
     res.status(500).send('Error al actualizar el flower');
@@ -46,7 +47,7 @@ export const updateFlower = async (req: Request, res: Response): Promise<void> =
 
 export const deleteFlower = async (req: Request, res: Response): Promise<void> => {
   try {
-    await FlowerService.deleteFlower(parseInt(req.params.id, 10)); 
+    await FlowerService.deleteFlower((req.params.name)); 
     res.send('Flower eliminado');
   } catch (err) {
     res.status(500).send('Error al eliminar el flower');

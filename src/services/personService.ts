@@ -19,8 +19,7 @@ export class PersonService {
       if (!person) {
         return null;
       }
-      console.log('Password received:', password);
-      console.log('Person password:', person.password);
+     
       const passwordMatch = await bcrypt.compare(password, person.password);
 
       if (!passwordMatch) {
@@ -31,7 +30,7 @@ export class PersonService {
         id: person.id,
         email: person.email
       };
-      return jwt.sign(payload, secretKey, { expiresIn: '1500m' });
+      return jwt.sign(payload, secretKey, { expiresIn: '90m' });
 
     } catch (error: any) {
       throw new Error(`Error al logearse: ${error.message}`);
@@ -64,15 +63,21 @@ export class PersonService {
 
   public static async addPerson(person: Person): Promise<Person> {
     try {
-        const salt = await bcrypt.genSalt(saltRounds);
+      const salt = await bcrypt.genSalt(saltRounds);
         person.created_at = DateUtils.formatDate(new Date());
         person.updated_at = DateUtils.formatDate(new Date());
+        person.created_by = person.email;
+        person.updated_by = person.email;
+        person.deleted = false;
         person.password = await bcrypt.hash(person.password, salt);
         if (!person.role_id) {
             person.role_id = 2; 
         }
+        person.created_by = person.email;
+        person.updated_by = person.email;
         return await PersonRepository.createPerson(person);
     } catch (error: any) {
+      console.log(person);  
         throw new Error(`Error al crear persona: ${error.message}`);
     }
 }

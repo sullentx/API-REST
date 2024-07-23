@@ -20,6 +20,7 @@ export const loginPerson = async (req: Request, res: Response) => {
 export const getPersons = async (_req: Request, res: Response) => {
   try {
     const persons = await PersonService.getAllPersons();
+    
     if (persons) {
       res.status(200).json(persons);
     } else {
@@ -48,12 +49,16 @@ export const createPerson = async (req: Request, res: Response) => {
   try {
     const newPerson = await PersonService.addPerson(req.body);
     if (newPerson) {
+      let email = req.params.email;
+      email = newPerson.created_at;
+      console.log(email)
       res.status(201).json(newPerson);
     } else {
       res.status(400).json({ message: 'Something went wrong' });
     }
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+    console.log(error)
   }
 };
 
