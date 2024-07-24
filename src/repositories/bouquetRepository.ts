@@ -2,6 +2,7 @@ import connection from '../shared/config/database';
 import { Bouquet } from '../models/bouquet';
 
 export class BouquetRepository {
+  
   public static async create(bouquet: Bouquet): Promise<number> {
     const query = 'INSERT INTO bouquet (name, type_name,details,price,quantity,is_precreated,image_url ,created_at,created_by,updated_at,updated_by,deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
 

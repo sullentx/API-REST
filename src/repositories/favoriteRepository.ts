@@ -31,6 +31,7 @@ export class FavoriteRepository {
 
   public static async addFavorite(customerId: number, bouquetId: number): Promise<number> {
     const query = 'INSERT INTO Favorites (customer_id, bouquet_id) VALUES (?, ?)';
+  
     return new Promise((resolve, reject) => {
       connection.execute(query, [customerId, bouquetId], (error: any, results: ResultSetHeader) => {
         if (error) {

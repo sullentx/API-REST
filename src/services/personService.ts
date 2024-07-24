@@ -64,23 +64,30 @@ export class PersonService {
   public static async addPerson(person: Person): Promise<Person> {
     try {
       const salt = await bcrypt.genSalt(saltRounds);
-        person.created_at = DateUtils.formatDate(new Date());
-        person.updated_at = DateUtils.formatDate(new Date());
-        person.created_by = person.email;
-        person.updated_by = person.email;
-        person.deleted = false;
+      person.first_name = person.first_name;
+      person.last_name = person.last_name;
+      person.email =   person.email;
+      person.password = person.password;
+      person.phone_number = person.phone_number;
+      person.address = person.address;
+      person.created_at = DateUtils.formatDate(new Date());
+      person.created_by = person.email;
+      person.updated_at = DateUtils.formatDate(new Date());
+      person.updated_by = person.email;
+      person.deleted = person.deleted;
+      person.role_id = person.role_id;
         person.password = await bcrypt.hash(person.password, salt);
         if (!person.role_id) {
             person.role_id = 2; 
         }
-        person.created_by = person.email;
-        person.updated_by = person.email;
+        person.deleted = false;
         return await PersonRepository.createPerson(person);
     } catch (error: any) {
       console.log(person);  
         throw new Error(`Error al crear persona: ${error.message}`);
     }
 }
+
 
 
   public static async modifyPerson(personId: number, personData: Person): Promise<Person | null> {
@@ -95,11 +102,20 @@ export class PersonService {
         if (personData.password) {
           personFound.password = await bcrypt.hash(personData.password, salt);
         }
+        if(personData.phone_number){
+          personFound.phone_number = personData.phone_number;
+        }
+        if(personData.address){
+          personFound.address = personData.address;
+        }
         if (personData.deleted) {
           personFound.deleted = personData.deleted;
         }
-        personFound.updated_by = personData.updated_by;
+        if(personData.updated_by){
+          personFound.updated_by = personData.updated_by;
+        }
         personFound.updated_at = DateUtils.formatDate(new Date());
+        console.log(personFound)
         return await PersonRepository.updatePerson(personId, personFound);
       } else {
         return null;

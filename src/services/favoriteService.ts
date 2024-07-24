@@ -12,19 +12,11 @@ export class FavoriteService {
 
   public static async addFavorite(customerId: number, bouquetId: number): Promise<Favorite> {
     const favoriteId = await FavoriteRepository.addFavorite(customerId, bouquetId);
-    const now = new Date().toISOString(); 
     return {
       id: favoriteId,
       customer_id: customerId,
       bouquet_id: bouquetId,
-      created_at: now,
-      created_by: 'system',
-      updated_at: now,
-      updated_by: 'system',
-      deleted: false,
     };
   }
-
-
   
 }
