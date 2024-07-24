@@ -3,16 +3,27 @@ import { BouquetService } from '../services/BouquetService';
 
 export const createBouquet = async (req: Request, res: Response) => {
   try {
-    const newBouquet = await BouquetService.addBouquet(req.body);
-    res.status(201).json(newBouquet);
+    console.log(req.file);
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    const newProduct = await BouquetService.addBouquet(req.body, req.file);
+    console.log(newProduct);
+    if (newProduct) {
+      res.status(201).json(newProduct);
+    } else {
+      res.status(404).json({ message: 'Algo salio mal' });
+    }
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
+
 };
 
 export const getBouquetById = async (req: Request, res: Response) => {
   try {
     const bouquet = await BouquetService.getBouquetById(parseInt(req.params.id, 10));
+    
     if (bouquet) {
       res.status(200).json(bouquet);
     } else {
@@ -50,11 +61,3 @@ export const deleteBouquet = async (req: Request, res: Response) => {
   }
 };
 
-export const getBouquetByIdWithImages = async (req: Request, res: Response) => {
-  try {
-    const bouquetWithImages = await BouquetService.getBouquetByIdWithImages(parseInt(req.params.id, 10));
-    res.status(200).json(bouquetWithImages);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-};
