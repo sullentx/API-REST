@@ -15,7 +15,7 @@ export class FlowerService {
     return FlowerRepository.findByName(name);
   }
 
-  public static async createFlower(flower: Flower, file: Express.Multer.File) {
+  public static async createFlower(flower: Flower, file: Express.Multer.File, userEmail:string) {
     const urlProject = process.env.URL;
     const portProject = process.env.PORT;
     try {
@@ -25,9 +25,9 @@ export class FlowerService {
       flower.price = flower.price;
       flower.quantity = flower.quantity;
       flower.created_at = DateUtils.formatDate(new Date());
-      flower.created_by = 'Administrador';
+      flower.created_by = userEmail;
       flower.updated_at = DateUtils.formatDate(new Date());
-      flower.updated_by = 'Administrador';
+      flower.updated_by = userEmail;
       flower.deleted = false;
       flower.image_url = `${urlProject}:${portProject}/uploads/${file.filename}`;
       const flowerId= await FlowerRepository.createFlower(flower);
@@ -38,23 +38,33 @@ export class FlowerService {
     }
   }
   
-  public static async updateFlower(flowerId: number, updatedItem: Flower, file?: Express.Multer.File): Promise<void> {
+  public static async updateFlower(flowerId: number, updatedItem: Flower, file: Express.Multer.File,userEmail:string) {
     const flowerFound = await FlowerRepository.findById(flowerId);
     if (flowerFound) {
-      if (updatedItem.name) flowerFound.name = updatedItem.name;
-      if (updatedItem.price) flowerFound.price = updatedItem.price;
-      if (updatedItem.color) flowerFound.color = updatedItem.color;
-      if (updatedItem.quantity) flowerFound.quantity = updatedItem.quantity;
+       flowerFound.name = updatedItem.name;
+       flowerFound.price = updatedItem.price;
+       flowerFound.color = updatedItem.color;
+       flowerFound.quantity = updatedItem.quantity;
       flowerFound.updated_at = DateUtils.formatDate(new Date());
-      flowerFound.updated_by = 'Administrador';
-      if (updatedItem.deleted !== undefined) flowerFound.deleted = updatedItem.deleted;
-  
+      flowerFound.updated_by = userEmail;
+      flowerFound.deleted = false;
+      console.log(updatedItem.deleted)
       if (file) {
         const urlProject = process.env.URL;
         const portProject = process.env.PORT;
         flowerFound.image_url = `${urlProject}:${portProject}/uploads/${file.filename}`;
       }
-  
+  /* 
+   bouquetFound.name = bouquet.name;
+      bouquetFound.type_name = bouquet.type_name;
+      bouquetFound.details = bouquet.details;
+      bouquetFound.quantity = bouquet.quantity;
+      bouquetFound.is_precreated = bouquet.is_precreated;
+      bouquetFound.created_at = bouquetFound.created_at;
+      bouquetFound.created_by = bouquetFound.created_by;
+      bouquetFound.updated_at = DateUtils.formatDate(new Date());
+      bouquetFound.updated_by = userEmail;
+      bouquetFound.deleted = bouquetFound.deleted; */
       // Actualizar la flor en la base de datos
       await FlowerRepository.updateFlower(flowerId, flowerFound);
     } else {

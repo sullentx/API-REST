@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getFlowers, getFlowerById, createFlower, updateFlower, deleteFlower } from '../controllers/flowerController';
 import { authMiddleware } from '../shared/middlewares/auth';
 import { adminMiddleware } from '../shared/middlewares/roleMiddleware';
-import upload from '../shared/middlewares/uploadMiddleware';
+import upload from '../shared/middlewares/uploadMiddlewareFlower';
 const flowerRoutes :Router = Router();
 
 // routerBouquet.put('/bouquets/:id',upload.single('image_url'),authMiddleware,adminMiddleware ,updateBouquet);

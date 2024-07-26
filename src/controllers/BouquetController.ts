@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
 import { BouquetService } from '../services/BouquetService';
-
-export const createBouquet = async (req: Request, res: Response) => {
+import { AuthRequest } from '../shared/config/types/authRequest';
+export const createBouquet = async (req: AuthRequest, res: Response) => {
   try {
+    
     console.log(req.file);
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
-    const newProduct = await BouquetService.addBouquet(req.body, req.file);
-    console.log(newProduct);
+    if (!req.personData) {
+      return res.status(401).send('User data not available.');
+    }
+    const newProduct = await BouquetService.addBouquet(req.body, req.file,req.personData.email);
     if (newProduct) {
       res.status(201).json(newProduct);
     } else {
@@ -43,9 +46,15 @@ export const getAllBouquets = async (_req: Request, res: Response) => {
   }
 };
 
-export const updateBouquet = async (req: Request, res: Response) => {
+export const updateBouquet = async (req: AuthRequest, res: Response) => {
   try {
-    await BouquetService.modifyBouquet(parseInt(req.params.id, 10), req.body);
+    if(!req.personData){
+      return res.status(401).send('User data not available.');
+    }
+    if(!req.file){
+      return res.status(401).send('File not available.');
+    }
+    await BouquetService.modifyBouquet(parseInt(req.params.id, 10), req.body,req.file,req.personData.email);
     res.status(200).json({ message: 'Bouquet updated' });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

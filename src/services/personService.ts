@@ -28,8 +28,10 @@ export class PersonService {
 
       const payload = {
         id: person.id,
-        email: person.email
+        email: person.email,
+        role_id: person.role_id
       };
+      console.log(payload.role_id)
       return jwt.sign(payload, secretKey, { expiresIn: '90m' });
 
     } catch (error: any) {
@@ -80,6 +82,7 @@ export class PersonService {
         if (!person.role_id) {
             person.role_id = 2; 
         }
+        console.log(person)
         person.deleted = false;
         return await PersonRepository.createPerson(person);
     } catch (error: any) {

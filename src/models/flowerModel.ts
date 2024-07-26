@@ -8,6 +8,6 @@ export interface Flower {
     created_by: string,
     updated_at: string,
     updated_by: string,
-    deleted: false,
+    deleted: boolean,
     image_url: string;
   }  

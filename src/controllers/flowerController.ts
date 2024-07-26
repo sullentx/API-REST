@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { FlowerService } from '../services/flowerService';
 import { Flower } from '../models/flowerModel'; 
+import { AuthRequest } from '../shared/config/types/authRequest';
 
 export const getFlowers = async (_req: Request, res: Response): Promise<void> => {
   try {
@@ -25,12 +26,15 @@ export const getFlowerById = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-export const createFlower = async (req: Request, res: Response) => {
+export const createFlower = async (req: AuthRequest, res: Response) => {
   try {
     if(!req.file){
       return res.status(400).send('no file uploaded.')
     }
-    const newFlower = await FlowerService.createFlower(req.body, req.file);
+    if(!req.personData){
+      return res.status(400).send('No data provied')
+    }
+    const newFlower = await FlowerService.createFlower(req.body, req.file,req.personData.email);
     console.log(newFlower)
     if(newFlower){
       res.status(201).json(newFlower)
@@ -43,9 +47,15 @@ export const createFlower = async (req: Request, res: Response) => {
   }
 };
 
-export const updateFlower = async (req: Request, res: Response): Promise<void> => {
+export const updateFlower = async (req: AuthRequest, res: Response) => {
   try {
     const flowerId = parseInt(req.params.id, 10);
+    if(!req.file){
+      return res.status(400).send('no file provied');
+    }
+    if(!req.personData){
+      return res.status(400).send('no data provied');
+    }
     if (isNaN(flowerId)) {
       res.status(400).send('Invalid ID');
       return;
@@ -54,7 +64,7 @@ export const updateFlower = async (req: Request, res: Response): Promise<void> =
     const updatedFlower: Flower = req.body;
     const file = req.file;
 
-    await FlowerService.updateFlower(flowerId, updatedFlower, file);
+    await FlowerService.updateFlower(flowerId, updatedFlower, file,req.personData.email);
     res.send('Flower actualizado');
   } catch (err) {
     res.status(500).send('Error al actualizar el flower');

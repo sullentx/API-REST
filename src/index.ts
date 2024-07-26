@@ -8,9 +8,20 @@ import customerRoutes from './routes/customerRoutes';
 import flowerRoutes from './routes/flowerRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
 import routerBouquet from './routes/bouquetRoutes';
+import resquestRoutes from './routes/requestRoutes';
+import routerCarrito from './routes/carritoRoutes';
 // Importar middlewares compartidos
 import { errorHandler } from './shared/middlewares/errorHandler';
 import { notFoundHandler } from './shared/middlewares/notFoundHandler';
+// Configuración de CORS
+
+/*const corsOptions = {
+origin: 'https://miapi.integrador.xyz', // Permitir solicitudes
+methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
+credentials: true, // Permitir el envío de credenciales
+optionsSuccessStatus: 204 // Estado para opciones exitosas
+};*/
+
 
 // Configuración de variables de entorno
 dotenv.config();
@@ -18,6 +29,7 @@ dotenv.config();
 // Crear la aplicación de Express
 const app: Application = express();
 const port: number = parseInt(process.env.PORT as string, 10);
+// app.use(cors(corsOptions));
 
 // Verificar variables de entorno
 console.log('URL:', process.env.URL);
@@ -33,6 +45,8 @@ app.use('/api/customer', customerRoutes);
 app.use('/api/flowers', flowerRoutes);
 app.use('/api', favoriteRoutes);
 app.use('/api', routerBouquet);
+app.use('/api/pedido',resquestRoutes)
+app.use('/api/carrito',routerCarrito)
 
 // Middleware para subir imágenes
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -45,5 +59,5 @@ app.use(errorHandler);
 
 // Iniciar el servidor
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en ${port}`);
 });
