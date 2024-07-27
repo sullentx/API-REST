@@ -25,16 +25,10 @@ class FavoriteService {
     static addFavorite(customerId, bouquetId) {
         return __awaiter(this, void 0, void 0, function* () {
             const favoriteId = yield favoriteRepository_1.FavoriteRepository.addFavorite(customerId, bouquetId);
-            const now = new Date().toISOString();
             return {
                 id: favoriteId,
                 customer_id: customerId,
                 bouquet_id: bouquetId,
-                created_at: now,
-                created_by: 'system',
-                updated_at: now,
-                updated_by: 'system',
-                deleted: false,
             };
         });
     }

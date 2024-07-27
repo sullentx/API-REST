@@ -62,6 +62,9 @@ const createPerson = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const newPerson = yield personService_1.PersonService.addPerson(req.body);
         if (newPerson) {
+            let email = req.params.email;
+            email = newPerson.created_at;
+            console.log(email);
             res.status(201).json(newPerson);
         }
         else {

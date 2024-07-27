@@ -35,8 +35,10 @@ class PersonService {
                 }
                 const payload = {
                     id: person.id,
-                    email: person.email
+                    email: person.email,
+                    role_id: person.role_id
                 };
+                console.log(payload.role_id);
                 return jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: '90m' });
             }
             catch (error) {
@@ -78,17 +80,24 @@ class PersonService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const salt = yield bcrypt_1.default.genSalt(saltRounds);
+                person.first_name = person.first_name;
+                person.last_name = person.last_name;
+                person.email = person.email;
+                person.password = person.password;
+                person.phone_number = person.phone_number;
+                person.address = person.address;
                 person.created_at = DateUtils_1.DateUtils.formatDate(new Date());
-                person.updated_at = DateUtils_1.DateUtils.formatDate(new Date());
                 person.created_by = person.email;
+                person.updated_at = DateUtils_1.DateUtils.formatDate(new Date());
                 person.updated_by = person.email;
-                person.deleted = false;
+                person.deleted = person.deleted;
+                person.role_id = person.role_id;
                 person.password = yield bcrypt_1.default.hash(person.password, salt);
                 if (!person.role_id) {
                     person.role_id = 2;
                 }
-                person.created_by = person.email;
-                person.updated_by = person.email;
+                console.log(person);
+                person.deleted = false;
                 return yield personRepository_1.PersonRepository.createPerson(person);
             }
             catch (error) {
@@ -109,11 +118,20 @@ class PersonService {
                     if (personData.password) {
                         personFound.password = yield bcrypt_1.default.hash(personData.password, salt);
                     }
+                    if (personData.phone_number) {
+                        personFound.phone_number = personData.phone_number;
+                    }
+                    if (personData.address) {
+                        personFound.address = personData.address;
+                    }
                     if (personData.deleted) {
                         personFound.deleted = personData.deleted;
                     }
-                    personFound.updated_by = personData.updated_by;
+                    if (personData.updated_by) {
+                        personFound.updated_by = personData.updated_by;
+                    }
                     personFound.updated_at = DateUtils_1.DateUtils.formatDate(new Date());
+                    console.log(personFound);
                     return yield personRepository_1.PersonRepository.updatePerson(personId, personFound);
                 }
                 else {

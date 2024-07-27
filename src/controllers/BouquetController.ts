@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
 import { BouquetService } from '../services/BouquetService';
 import { AuthRequest } from '../shared/config/types/authRequest';
+
+
 export const createBouquet = async (req: AuthRequest, res: Response) => {
+  console.log(req.file);
+    console.log(req.body);
+    console.log(req.personData)
   try {
-    
-    console.log(req.file);
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
@@ -18,6 +21,7 @@ export const createBouquet = async (req: AuthRequest, res: Response) => {
       res.status(404).json({ message: 'Algo salio mal' });
     }
   } catch (error: any) {
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 
@@ -69,4 +73,44 @@ export const deleteBouquet = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const createCustomBouquet = async (req: AuthRequest, res: Response) => {
+  console.log(req.personData)
+console.log(req.body)
+  try {
+    if (!req.personData) {
+      return res.status(401).send('User data not available.');
+    }
+
+    const { name, type_name, details, flower_quantity, is_precreated, image_url, flowers } = req.body;
+
+    const newBouquet = {
+      id: 0,
+      name: name,
+      type_name: type_name,
+      details: details,
+      price: 0,
+      quantity: flower_quantity,
+      flower_quantity: flowers,
+      is_precreated: is_precreated,
+      image_url: image_url,
+      created_at: '',
+      created_by: '',
+      updated_at: '',
+      updated_by: '',
+      deleted: false
+    };
+    console.log(newBouquet)
+    const createdBouquet = await BouquetService.createCustomBouquet(newBouquet, flowers, req.personData.email);
+
+    if (createdBouquet) {
+      res.status(201).json(createdBouquet);
+    } else {
+      res.status(404).json({ message: 'Algo salió mal' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 

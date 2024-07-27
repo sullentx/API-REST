@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { createBouquet, getBouquetById, getAllBouquets, updateBouquet, deleteBouquet, } from '../controllers/bouquetController';
-import { adminMiddleware } from '../shared/middlewares/roleMiddleware';
+import { createBouquet, getBouquetById, getAllBouquets, updateBouquet, deleteBouquet, createCustomBouquet, } from '../controllers/bouquetController';
+import { adminMiddleware, customerMiddleware } from '../shared/middlewares/roleMiddleware';
 import { authMiddleware } from '../shared/middlewares/auth';
 import upload from '../shared/middlewares/uploadMiddleware';
 
@@ -11,5 +11,5 @@ routerBouquet.get('/bouquets/:id', getBouquetById);
 routerBouquet.get('/bouquets', getAllBouquets);
 routerBouquet.put('/bouquets/:id',upload.single('image_url'),authMiddleware,adminMiddleware ,updateBouquet);
 routerBouquet.delete('/bouquets/:id', authMiddleware,adminMiddleware,deleteBouquet);
-
+routerBouquet.post('/bouquets/custom', authMiddleware, customerMiddleware ,createCustomBouquet);
 export default routerBouquet;

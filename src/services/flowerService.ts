@@ -29,7 +29,8 @@ export class FlowerService {
       flower.updated_at = DateUtils.formatDate(new Date());
       flower.updated_by = userEmail;
       flower.deleted = false;
-      flower.image_url = `${urlProject}:${portProject}/uploads/${file.filename}`;
+      flower.image_url = `${urlProject}:${portProject}/uploadsFlower/${file.filename}`;
+      console.log(flower)
       const flowerId= await FlowerRepository.createFlower(flower);
       flower.id = flowerId;
       return flower;

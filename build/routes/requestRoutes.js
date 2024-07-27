@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const requestController_1 = require("../controllers/requestController");
+const auth_1 = require("../shared/middlewares/auth");
+const roleMiddleware_1 = require("../shared/middlewares/roleMiddleware");
+const routerRequest = (0, express_1.Router)();
+routerRequest.get('/requests', requestController_1.getRequests);
+routerRequest.get('/requests/:id', requestController_1.getRequestById);
+routerRequest.post('/requests/addcarrito', auth_1.authMiddleware, roleMiddleware_1.customerMiddleware, requestController_1.createRequest);
+routerRequest.put('/requests/:id', requestController_1.updateRequest);
+routerRequest.delete('/requests/:id', requestController_1.deleteRequest);
+routerRequest.patch('/requests/:id/status', auth_1.authMiddleware, roleMiddleware_1.customerMiddleware, requestController_1.updateRequestStatus);
+exports.default = routerRequest;

@@ -1,11 +1,15 @@
-import { createRequest, getOrders, updateOrderStatus } from '../controllers/requestController';
 import { Router } from 'express';
+import { getRequests, getRequestById, createRequest, updateRequest, deleteRequest, updateRequestStatus } from '../controllers/requestController';
 import { authMiddleware } from '../shared/middlewares/auth';
-import {  customerMiddleware, deliveryManMiddleware } from '../shared/middlewares/roleMiddleware';
-const resquestRoutes: Router = Router();
+import { customerMiddleware } from '../shared/middlewares/roleMiddleware';
 
-resquestRoutes.get('/request', authMiddleware, deliveryManMiddleware, getOrders);
-resquestRoutes.put('/request/:id', authMiddleware, deliveryManMiddleware, updateOrderStatus); 
-resquestRoutes.post('/request',authMiddleware,customerMiddleware,createRequest)
+const routerRequest = Router();
 
-export default resquestRoutes;
+routerRequest.get('/requests', getRequests);
+routerRequest.get('/requests/:id', getRequestById);
+routerRequest.post('/requests/addcarrito',authMiddleware,customerMiddleware ,createRequest);
+routerRequest.put('/requests/:id', updateRequest);
+routerRequest.delete('/requests/:id', deleteRequest);
+routerRequest.patch('/requests/:id/status', authMiddleware,customerMiddleware ,updateRequestStatus);
+
+export default routerRequest;

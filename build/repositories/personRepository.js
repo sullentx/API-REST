@@ -72,9 +72,23 @@ class PersonRepository {
     }
     static createPerson(person) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'INSERT INTO person (first_name, last_name, email, password, phone_number, address, role_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            const query = 'INSERT INTO person (first_name, last_name, email, password, phone_number, address,created_at,created_by,updated_at,updated_by,deleted ,role_id) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)';
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [person.first_name, person.last_name, person.email, person.password, person.phone_number, person.address, person.role_id], (error, result) => {
+                database_1.default.execute(query, [person.first_name, person.last_name, person.email, person.password, person.phone_number, person.address, person.created_at, person.created_by, person.updated_at, person.created_by, person.deleted, person.role_id], (error, result) => {
+                    /*
+            first_name: string;
+            last_name: string;
+            email: string;
+            password: string;
+            phone_number: string;
+            address: string;
+            created_at: string;
+            created_by: string;
+            updated_at: string;
+            updated_by: string;
+            deleted: boolean;
+            role_id: number;
+          */
                     if (error) {
                         reject(error);
                     }

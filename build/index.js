@@ -27,41 +27,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv = __importStar(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
+const path_1 = __importDefault(require("path"));
 // Importar rutas de módulos
 const customerRoutes_1 = __importDefault(require("./routes/customerRoutes"));
 const flowerRoutes_1 = __importDefault(require("./routes/flowerRoutes"));
 const favoriteRoutes_1 = __importDefault(require("./routes/favoriteRoutes"));
-const imageRoutes_1 = __importDefault(require("./routes/imageRoutes"));
-const BouquetRoutes_1 = __importDefault(require("./routes/BouquetRoutes"));
+const bouquetRoutes_1 = __importDefault(require("./routes/bouquetRoutes"));
+const requestRoutes_1 = __importDefault(require("./routes/requestRoutes"));
+// import resquestRoutes from './routes/requestRoutes';
 // Importar middlewares compartidos
 const errorHandler_1 = require("./shared/middlewares/errorHandler");
 const notFoundHandler_1 = require("./shared/middlewares/notFoundHandler");
+// Configuración de CORS
+/*const corsOptions = {
+origin: 'https://miapi.integrador.xyz', // Permitir solicitudes
+methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
+credentials: true, // Permitir el envío de credenciales
+optionsSuccessStatus: 204 // Estado para opciones exitosas
+};*/
 // Configuración de variables de entorno
 dotenv.config();
 // Crear la aplicación de Express
 const app = (0, express_1.default)();
 const port = parseInt(process.env.PORT, 10);
+// app.use(cors(corsOptions));
+// Verificar variables de entorno
+console.log('URL:', process.env.URL);
+console.log('PORT:', port);
 // Middleware de análisis del cuerpo
-app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json()); // Usar solo express.json()
 app.use((0, morgan_1.default)('dev'));
 app.use((0, cors_1.default)());
 // Rutas de los módulos
-app.use('/api/upload', imageRoutes_1.default);
 app.use('/api/customer', customerRoutes_1.default);
 app.use('/api/flowers', flowerRoutes_1.default);
-app.use(express_1.default.json());
 app.use('/api', favoriteRoutes_1.default);
-app.use('/api', BouquetRoutes_1.default);
+app.use('/api', bouquetRoutes_1.default);
+app.use('/api', requestRoutes_1.default);
+// app.use('/api/pedido',resquestRoutes)
+// Middleware para subir imágenes
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 // Middleware para manejar rutas no encontradas
 app.use(notFoundHandler_1.notFoundHandler);
 // Middleware de manejo de errores
 app.use(errorHandler_1.errorHandler);
 // Iniciar el servidor
 app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+    console.log(`Servidor corriendo en ${port}`);
 });

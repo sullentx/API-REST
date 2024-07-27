@@ -4,6 +4,7 @@ import { Flower } from '../models/flowerModel';
 import { AuthRequest } from '../shared/config/types/authRequest';
 
 export const getFlowers = async (_req: Request, res: Response): Promise<void> => {
+  console.log(res)
   try {
     const flowers = await FlowerService.getFlowers(); 
     res.json(flowers);
@@ -28,17 +29,26 @@ export const getFlowerById = async (req: Request, res: Response): Promise<void> 
 
 export const createFlower = async (req: AuthRequest, res: Response) => {
   try {
+    console.log(req.personData);
+    console.log('Received request body:', req.body);
+    console.log('Received file:', req.file);
     if(!req.file){
+      console.log(req.file);
       return res.status(400).send('no file uploaded.')
     }
     if(!req.personData){
+      console.log(req.personData);
       return res.status(400).send('No data provied')
     }
+    console.log('Received request body:', req.body);
+    console.log('Received file:', req.file);
+    console.log('Person data:', req.personData);
     const newFlower = await FlowerService.createFlower(req.body, req.file,req.personData.email);
     console.log(newFlower)
     if(newFlower){
       res.status(201).json(newFlower)
     }else {
+      console.log(newFlower)
       res.status(404).json({message: 'Algo salio mal'})
     }
   } catch (err) {

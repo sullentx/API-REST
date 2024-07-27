@@ -78,7 +78,7 @@ export class PersonService {
       person.updated_by = person.email;
       person.deleted = person.deleted;
       person.role_id = person.role_id;
-        person.password = await bcrypt.hash(person.password, salt);
+      person.password = await bcrypt.hash(person.password, salt);
         if (!person.role_id) {
             person.role_id = 2; 
         }

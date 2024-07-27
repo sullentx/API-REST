@@ -17,9 +17,25 @@ const database_1 = __importDefault(require("../shared/config/database"));
 class BouquetRepository {
     static create(bouquet) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'INSERT INTO Bouquet (name, is_precreated, created_by) VALUES (?, ?, ?)';
+            const query = `
+      INSERT INTO Bouquet (name, type_name, details, price, quantity, is_precreated, image_url, flower_quantity, created_at, created_by, updated_at, updated_by, deleted)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [bouquet.name, bouquet.is_precreated, bouquet.created_by], (error, result) => {
+                database_1.default.execute(query, [
+                    bouquet.name,
+                    bouquet.type_name,
+                    bouquet.details,
+                    bouquet.price,
+                    bouquet.quantity,
+                    bouquet.is_precreated,
+                    bouquet.image_url,
+                    bouquet.flower_quantity,
+                    bouquet.created_at,
+                    bouquet.created_by,
+                    bouquet.updated_at,
+                    bouquet.updated_by,
+                    bouquet.deleted
+                ], (error, result) => {
                     if (error) {
                         reject(error);
                     }
@@ -62,9 +78,40 @@ class BouquetRepository {
     }
     static update(bouquetId, bouquet) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'UPDATE Bouquet SET name = ?, is_precreated = ?, updated_by = ? WHERE id = ?';
+            const query = `
+      UPDATE Bouquet
+      SET
+        name = ?,
+        type_name = ?,
+        details = ?,
+        price = ?,
+        quantity = ?,
+        is_precreated = ?,
+        image_url = ?,
+        flower_quantity = ?, // Nuevo atributo
+        created_at = ?,
+        created_by = ?,
+        updated_at = ?,
+        updated_by = ?,
+        deleted = ?
+      WHERE id = ?`;
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [bouquet.name, bouquet.is_precreated, bouquet.updated_by, bouquetId], (error) => {
+                database_1.default.execute(query, [
+                    bouquet.name,
+                    bouquet.type_name,
+                    bouquet.details,
+                    bouquet.price,
+                    bouquet.quantity,
+                    bouquet.is_precreated,
+                    bouquet.image_url,
+                    bouquet.flower_quantity,
+                    bouquet.created_at,
+                    bouquet.created_by,
+                    bouquet.updated_at,
+                    bouquet.updated_by,
+                    bouquet.deleted,
+                    bouquetId
+                ], (error) => {
                     if (error) {
                         reject(error);
                     }
@@ -90,74 +137,16 @@ class BouquetRepository {
             });
         });
     }
-    static findAllWithImages() {
+    static createCustom(bouquetFlower) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = `
-      SELECT b.id, b.name, b.is_precreated, bi.id AS image_id, bi.image_url
-      FROM Bouquet b
-      LEFT JOIN BouquetImage bi ON b.id = bi.bouquet_id
-      WHERE b.deleted = false
-      ORDER BY b.id;
-    `;
+            const query = 'INSERT INTO BouquetFlower (bouquet_id, flower_id, quantity) VALUES (?, ?, ?)';
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, (error, results) => {
+                database_1.default.execute(query, [bouquetFlower.bouquet_id, bouquetFlower.flower_id, bouquetFlower.quantity], (error) => {
                     if (error) {
                         reject(error);
                     }
                     else {
-                        const bouquets = [];
-                        let currentBouquet;
-                        results.forEach((row) => {
-                            if (!currentBouquet || currentBouquet.id !== row.id) {
-                                if (currentBouquet) {
-                                    bouquets.push(currentBouquet);
-                                }
-                                currentBouquet = {
-                                    id: row.id,
-                                    name: row.name,
-                                    is_precreated: row.is_precreated,
-                                    image: [],
-                                };
-                            }
-                            if (row.image_id) {
-                                currentBouquet.image.push({
-                                    id: row.image_id,
-                                    image_url: row.image_url,
-                                });
-                            }
-                        });
-                        if (currentBouquet) {
-                            bouquets.push(currentBouquet);
-                        }
-                        resolve(bouquets);
-                    }
-                });
-            });
-        });
-    }
-    static findByIdWithImages(bouquetId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const bouquetQuery = 'SELECT * FROM Bouquet WHERE id = ? AND deleted = false';
-            const imagesQuery = 'SELECT * FROM BouquetImages WHERE bouquet_id = ? AND deleted = false';
-            return new Promise((resolve, reject) => {
-                database_1.default.query(bouquetQuery, [bouquetId], (error, bouquetResults) => {
-                    if (error) {
-                        reject(error);
-                    }
-                    else if (bouquetResults.length === 0) {
-                        reject(new Error('Bouquet not found'));
-                    }
-                    else {
-                        const bouquet = bouquetResults[0];
-                        database_1.default.query(imagesQuery, [bouquetId], (imageError, imageResults) => {
-                            if (imageError) {
-                                reject(imageError);
-                            }
-                            else {
-                                const images = imageResults;
-                                resolve({ bouquet, images });
-                            }
-                        });
+                        resolve();
                     }
                 });
             });

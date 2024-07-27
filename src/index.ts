@@ -8,8 +8,8 @@ import customerRoutes from './routes/customerRoutes';
 import flowerRoutes from './routes/flowerRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
 import routerBouquet from './routes/bouquetRoutes';
-import resquestRoutes from './routes/requestRoutes';
-import routerCarrito from './routes/carritoRoutes';
+import routerRequest from './routes/requestRoutes';
+// import resquestRoutes from './routes/requestRoutes';
 // Importar middlewares compartidos
 import { errorHandler } from './shared/middlewares/errorHandler';
 import { notFoundHandler } from './shared/middlewares/notFoundHandler';
@@ -45,8 +45,8 @@ app.use('/api/customer', customerRoutes);
 app.use('/api/flowers', flowerRoutes);
 app.use('/api', favoriteRoutes);
 app.use('/api', routerBouquet);
-app.use('/api/pedido',resquestRoutes)
-app.use('/api/carrito',routerCarrito)
+app.use('/api',routerRequest)
+// app.use('/api/pedido',resquestRoutes)
 
 // Middleware para subir imágenes
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

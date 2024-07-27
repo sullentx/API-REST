@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteFlower = exports.updateFlower = exports.createFlower = exports.getFlowerById = exports.getFlowers = void 0;
 const flowerService_1 = require("../services/flowerService");
 const getFlowers = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(res);
     try {
         const flowers = yield flowerService_1.FlowerService.getFlowers();
         res.json(flowers);
@@ -23,11 +24,12 @@ const getFlowers = (_req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getFlowers = getFlowers;
 const getFlowerById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const flower = yield flowerService_1.FlowerService.getFlowerbyId(parseInt(req.params.id, 10));
+        const flower = yield flowerService_1.FlowerService.getFlowerby((req.params.name));
         if (flower) {
             res.status(200).json(flower);
         }
         else {
+            console.log(flower);
             res.status(404).json({ message: 'Flower not found' });
         }
     }
@@ -38,19 +40,52 @@ const getFlowerById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getFlowerById = getFlowerById;
 const createFlower = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newFlower = req.body;
-        yield flowerService_1.FlowerService.createFlower(newFlower);
-        res.status(201).send('Flower creado');
+        console.log(req.personData);
+        console.log('Received request body:', req.body);
+        console.log('Received file:', req.file);
+        if (!req.file) {
+            console.log(req.file);
+            return res.status(400).send('no file uploaded.');
+        }
+        if (!req.personData) {
+            console.log(req.personData);
+            return res.status(400).send('No data provied');
+        }
+        console.log('Received request body:', req.body);
+        console.log('Received file:', req.file);
+        console.log('Person data:', req.personData);
+        const newFlower = yield flowerService_1.FlowerService.createFlower(req.body, req.file, req.personData.email);
+        console.log(newFlower);
+        if (newFlower) {
+            res.status(201).json(newFlower);
+        }
+        else {
+            console.log(newFlower);
+            res.status(404).json({ message: 'Algo salio mal' });
+        }
     }
     catch (err) {
-        res.status(500).send('Error al crear el flower');
+        console.log(err);
+        res.status(500).send('Error al crear la flor');
     }
 });
 exports.createFlower = createFlower;
 const updateFlower = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const flowerId = parseInt(req.params.id, 10);
+        if (!req.file) {
+            return res.status(400).send('no file provied');
+        }
+        if (!req.personData) {
+            return res.status(400).send('no data provied');
+        }
+        if (isNaN(flowerId)) {
+            res.status(400).send('Invalid ID');
+            return;
+        }
         const updatedFlower = req.body;
-        yield flowerService_1.FlowerService.updateFlower(parseInt(req.params.id, 10), updatedFlower);
+        const file = req.file;
+        yield flowerService_1.FlowerService.updateFlower(flowerId, updatedFlower, file, req.personData.email);
         res.send('Flower actualizado');
     }
     catch (err) {

@@ -30,11 +30,33 @@ class FlowerRepository {
             });
         });
     }
-    static findById(id) {
+    static findByName(name) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                database_1.default.query('SELECT * FROM flower WHERE id = ?', [id], (error, results) => {
+                database_1.default.query('SELECT * FROM flower WHERE name LIKE ?', [`%${name}%`], (error, results) => {
                     if (error) {
+                        console.log(error);
+                        reject(error);
+                    }
+                    else {
+                        const flowers = results;
+                        if (flowers.length > 0) {
+                            resolve(flowers[0]);
+                        }
+                        else {
+                            resolve(null);
+                        }
+                    }
+                });
+            });
+        });
+    }
+    static findById(flowerId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                database_1.default.query('SELECT * FROM flower WHERE id = ?', [flowerId], (error, results) => {
+                    if (error) {
+                        console.log(error);
                         reject(error);
                     }
                     else {
@@ -52,47 +74,69 @@ class FlowerRepository {
     }
     static createFlower(flower) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'INSERT INTO flower (name, price, color) VALUES (?,?,?)';
+            const query = 'INSERT INTO flower (name, price, color, quantity, created_at, created_by, updated_at, updated_by, deleted, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [flower.name, flower.price, flower.color], (error, result) => {
+                database_1.default.execute(query, [
+                    flower.name,
+                    flower.price,
+                    flower.color,
+                    flower.quantity,
+                    flower.created_at,
+                    flower.created_by,
+                    flower.updated_at,
+                    flower.updated_by,
+                    flower.deleted,
+                    flower.image_url
+                ], (error, result) => {
                     if (error) {
                         reject(error);
                     }
                     else {
-                        const createdFlowerId = result.insertId;
-                        const createdFlower = Object.assign(Object.assign({}, flower), { flower_id: createdFlowerId });
-                        resolve(createdFlower);
+                        resolve(result.insertId);
                     }
                 });
             });
         });
     }
-    static updateFlower(flower_id, flowerData) {
+    static updateFlower(flowerId, updatedItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'UPDATE flower SET name = ?, price = ?, color = ? WHERE flower_id = ?';
+            console.log('ID:', flowerId);
+            console.log('Updated Item:', updatedItem);
+            const query = 'UPDATE flower SET name = ?, price = ?, color = ?, quantity = ?, updated_at = ?, updated_by = ?, deleted = ?, image_url = ? WHERE id = ?';
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [flowerData.name, flowerData.price, flowerData.color, flower_id], (error, result) => {
+                database_1.default.execute(query, [
+                    updatedItem.name,
+                    updatedItem.price,
+                    updatedItem.color,
+                    updatedItem.quantity,
+                    updatedItem.updated_at,
+                    updatedItem.updated_by,
+                    updatedItem.deleted,
+                    updatedItem.image_url,
+                    flowerId
+                ], (error, result) => {
                     if (error) {
+                        console.log('Error:', error);
                         reject(error);
                     }
                     else {
-                        if (result.affectedRows > 0) {
-                            const updatedFlower = Object.assign(Object.assign({}, flowerData), { flower_id: flower_id });
-                            resolve(updatedFlower);
-                        }
-                        else {
+                        if (result.affectedRows === 0) {
                             resolve(null);
                         }
+                        else {
+                            const updatedFlower = Object.assign(Object.assign({}, updatedItem), { id: flowerId });
+                            resolve(updatedFlower);
+                        }
                     }
                 });
             });
         });
     }
-    static deleteFlower(id) {
+    static deleteFlower(flowerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'DELETE FROM flower WHERE flower_id = ?';
+            const query = 'DELETE FROM flower WHERE id = ?';
             return new Promise((resolve, reject) => {
-                database_1.default.execute(query, [id], (error, result) => {
+                database_1.default.execute(query, [flowerId], (error, result) => {
                     if (error) {
                         reject(error);
                     }
